@@ -21,7 +21,7 @@ $MAGENTA = "`e[1;38;5;13m"
 $CYAN = "`e[36m"
 $WHITE = "`e[37m"
 $SUITE_PATH = "C:\LegacyApp\Powershell_Suite" # Path to the PowerShell Suite directory.
-$INTERNAL_MODULES = @("GitComCom.psm1","Helpers.psm1","vs-suite.psm1","JiraAPI.psm1") # List of internal modules to import from the /Modules/Internal/ folder.
+$INTERNAL_MODULES = @("GitComCom.psm1","Helpers.psm1","vs-suite.psm1","JiraAPI.psm1","remote.psm1") # List of internal modules to import from the /Modules/Internal/ folder.
 
 # Initialize the PowerShell profile.
 $exe_path = Get-Location # get the current directory.

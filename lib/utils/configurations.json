@@ -3,5 +3,8 @@
         "pwshInstaller": "Powershell_Installer",
         "pwshSuite":"Powershell_Suite",
         "jenkinsPipeline":"jenkinspipeline"
+    },
+    "RemoteHosts":{
+        "CP":"192.168.1.1"
     }
 }
