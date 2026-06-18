@@ -52,6 +52,8 @@ Set-Location $exe_path # return to the current directory.
 # Shows the directories options.
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 Set-PSReadLineKeyHandler -Key Shift+Tab -Function MenuComplete
+# Fix stranges characters in the terminal.
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Sets the main prompt in the terminal
 function prompt{
