@@ -1,21 +1,11 @@
 {   
     "GitRepos":{
-        "G58":   "https://github.vitesco.io/EnDS-Test-Automation/VT.PRJ.GM.G58.FAST.git",
-        "G58VV": "https://github.vitesco.io/EnDS-Test-Automation/VT.PRJ.GM.G58.VVMAL.git",
-        "G56":   "https://github.vitesco.io/EnDS-Test-Automation/VT.PRJ.GM.G55.FAST.git",
-        "G56VV": "https://github.vitesco.io/EnDS-Test-Automation/VT.PRJ.GM.G56.VVMAL.git"
+        "RepoName": "--"
     },
     "RemoteHosts":{
-        "TMS02": "TAD2992W",
-        "TMS30": "",
-        "GDL01": ""
+        "HostName": ""
     },
-    "TA_SUITES":{
-        "G58":   "VT.PRJ.GM.G58.FAST",
-        "G58VV": "VT.PRJ.GM.G58.VVMAL",
-        "G56":   "VT.PRJ.GM.G55.FAST",
-        "G56VV": "VT.PRJ.GM.G56.VVMAL",
-        "G80":   "VT.PRJ.GM.G80.CVR",
-        "GMG":   "GMG"
+    "SUITES":{
+        "SuiteNames": "--"
     }
 }
