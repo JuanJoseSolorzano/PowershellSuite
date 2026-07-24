@@ -15,10 +15,96 @@ See the LICENSE file in the project root for more information.
 	File Name      : GitComCom.psm1
 	Author         : Solorzano, Juan Jose (uiv06924)
 	Prerequisite   : PowerShell V 1.0
+		Right separator / powerline arrow
+		Thin right separator
+		Left separator / reverse arrow
+		Thin left separator
+		Rounded left segment
+		Rounded right segment
+		Flame separator
+		Left flame separator
+	---
+		Git logo
+		Git branch
+		Branch symbol
+		Git branch alternative
+		Git pull request / merge
+		Git commit
+		Git compare
+		GitHub repository / fork
+		GitHub logo
+	Icon	Meaning
+		Added files
+	✚	Added / staged
+		Staged changes
+		Modified files
+		Modified / edited
+	~	Modified simple marker
+		Deleted files
+	✖	Deleted / removed
+		Renamed files
+	➜	Renamed / moved
+		Untracked files
+	?	Untracked simple marker
+		Merge conflict
+		Conflict / warning
+		Warning / conflict
+		Pull request / review
+		Compare / diff
+		Clean repository
+	󰄬	Clean / success
+	●	Dirty repository
+	±	Dirty working tree
+	Ahead / behind / sync
+	Icon	Meaning
+	⇡	Ahead of remote
+	⇣	Behind remote
+	⇕	Diverged
+		Ahead / upload
+		Behind / download
+	󰓦	Sync
+	󰑐	Refresh / update
+		Sync / compare
+		Push
+		Pull
+		Pull request / merge flow
+	Repository state
+	Icon	Meaning
+		Folder/repository
+		Folder
+		Open folder
+	󰉋	Directory
+	󰉖	Home directory
+		Locked / private repo
+		Unlocked / public repo
+	󰂖	Tag
+		Tag alternative
+		Release / tag
+	󰏗	Package / artifact
+	Common prompt status icons
+	Icon	Meaning
+	❯	Prompt symbol
+	❮	Reverse prompt symbol
+	➜	Prompt arrow
+	λ	Lambda prompt
+	>	Simple prompt
+	#	Admin/root prompt
+		User
+		Terminal
+		Terminal / console
+		PowerShell
+		Windows
+	󰍛	CPU
+		Memory
+		Time
+	󱎫	Duration
+	✘	Error / failed command
+		Success
+		Warning
 #>
 
 # Constants for GIT commands
-$USER_NAME = "<Name of the user>" # Replace with your GitHub username.
+$USER_NAME = "EnDS-Test-Automation" # Replace with your GitHub username.
 $SUITE_PATH = "C:\LegacyApp\Powershell_Suite" # Path to the PowerShell Suite directory.
 
 # Imports
@@ -35,7 +121,6 @@ Set-Location $exe_path
 #>
 function Write-BranchName {
 	$marks = "<{}>"
-
 	if((test-path -Path ".git") -or (git rev-parse --abbrev-ref HEAD) ){
 		try {
 			# Get the current branch name
@@ -104,6 +189,73 @@ function Write-BranchName {
 			# Handle error, e.g., if in a newly initialized git repo
 			Write-Host "< $commitHead>" -ForegroundColor "yellow" -NoNewLine
 		}
+	}
+}
+
+function Write-BranchName2 {
+	$marks = "<{}>"
+	if((test-path -Path ".git") -or (git rev-parse --abbrev-ref HEAD) ){
+		try {
+			# Get the current branch name
+			$branch = git rev-parse --abbrev-ref HEAD
+			if ($null -eq $branch -or $branch -eq "HEAD") {
+				# In detached HEAD state, show the short SHA
+				$commitCount = git status --porcelain
+				$commitHead = git rev-parse --short HEAD
+				if (($null -eq $commitCount) -and ($null -eq $commitHead)) {
+					return $marks.Replace("{}", " None")
+				}
+				elseif((git status --porcelain).Contains('??')){
+					return $marks.Replace("{}", " None")
+				}
+				elseif($commitHead){
+					return $marks.Replace("{}", "$branch")
+				}
+				elseif ((git status --porcelain).Contains('A')) {
+					return $marks.Replace("{}", "None")
+				}else{
+					return $marks.Replace("{}", "None")
+				}				
+			} else {
+				# We're on an actual branch
+				$status = git status --porcelain
+				if ($status -match '^\?\?') {
+					# Untracked files exist
+					return $marks.Replace("{}", " $branch")
+				} elseif ($status -match '^[AM]') {
+					# Files have been added (A) or modified (M)
+					return $marks.Replace("{}", " $branch")
+				} elseif ($status -notmatch '^\s*$') {
+					# Uncommitted changes exist but no staged files
+					return $marks.Replace("{}", " $branch")
+				}else{
+					# The tree is clean; check for pending commits
+					$upstream = "origin/$branch"
+					$commitsAhead = git rev-list --count "$upstream..HEAD"
+
+					if ($commitsAhead -gt 0) {
+						# There are commits that are pending a push
+						return $marks.Replace("{}", " $branch")
+					} else {
+						if($branch.Contains("master")){
+							return $marks.Replace("{}", " $branch")
+						}
+						elseif ($branch.ToLower().Contains("develop")) {
+							return $marks.Replace("{}", "$branch")
+						}
+						else{
+						# The tree is clean and up to date
+							return $marks.Replace("{}", "$branch")
+						}
+					}
+				}
+			}
+		} catch {
+			$commitHead = git rev-parse --short HEAD
+			return "< $commitHead>"
+		}
+	}else{
+		return ""
 	}
 }
 
@@ -262,7 +414,7 @@ function Get-LinkRepo{
 	Notes:
 	- The function uses a JSON file to map repository names to their URLs. The 
 #>
-function Repo([Parameter(Mandatory=$true)][string]$repo,[switch]$github=$true) {
+function Repo([Parameter(Mandatory=$true)][string]$repo,[switch]$github=$false) {
 
 	if(Test-Path -Path "$SUITE_PATH\lib\utils\configurations.json"){
 		# Read the configurations.json file to get the repository link or the repository name.
@@ -348,29 +500,4 @@ function Git-Push{
 	else {
 		Write-Output "push command needs to have a commit!!!"
 	}
-}
-
-function get-repos{
-    [CmdletBinding()]
-    param([string]$pattern)
-    $username = "JuanJoseSolorzano"
-    $page = 1
-    $allRepos = @()
-    while($true){
-        $url = write-output $("https://github.com/$username`?tab=repositories&page=$page")
-        $html = curl.exe -s $url
-        $repos = Write-Output $html | Select-String "codeRepository" | 
-            ForEach-Object {$_ -replace "`" itemprop=`"name codeRepository`" >",""} | 
-            ForEach-Object {$_ -replace "<a href=`"",""} | 
-            ForEach-Object {$_.Trim()} | 
-            ForEach-Object {"https://github.com$_.git"}
-        if ($repos.Count -eq 0) { break }
-        $allRepos += $repos
-        $page++
-    }
-    if($pattern){
-        $allRepos | Where-Object {$_ -like "*$pattern*"}
-    }else{
-        $allRepos
-    }
 }

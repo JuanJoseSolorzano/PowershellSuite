@@ -21,8 +21,10 @@ $MAGENTA = "`e[1;38;5;13m"
 $CYAN = "`e[36m"
 $WHITE = "`e[37m"
 $SUITE_PATH = "C:\LegacyApp\Powershell_Suite" # Path to the PowerShell Suite directory.
-$INTERNAL_MODULES = @("GitComCom.psm1","Helpers.psm1","vs-suite.psm1","JiraAPI.psm1","remote.psm1") # List of internal modules to import from the /Modules/Internal/ folder.
-
+$POWERSHELL_PATH = "C:\LegacyApp\Powershell_Suite"
+$INTERNAL_MODULES = @("GitComCom.psm1","Helpers.psm1","vs-suite.psm1")
+$LEGACYAPP = "C:\LegacyApp" # Path to the LegacyApp directory.
+$TDR = "EnDS-Test-Automation"
 # Initialize the PowerShell profile.
 $exe_path = Get-Location # get the current directory.
 Clear-Host # clear the console.
@@ -30,7 +32,6 @@ Clear-Host # clear the console.
 foreach($module in $INTERNAL_MODULES){
     $module_path = "$SUITE_PATH\lib\$module"
     if (Test-Path -Path $module_path) {
-        #echo " ${GREEN}[*]${RESET} Module $module imported successfully."
         Import-Module -Name $module_path -DisableNameChecking
     } else {
         Write-Host "Module $module not found in $SUITE_PATH\lib" -ForegroundColor Red
@@ -52,70 +53,18 @@ Set-Location $exe_path # return to the current directory.
 # Shows the directories options.
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 Set-PSReadLineKeyHandler -Key Shift+Tab -Function MenuComplete
-# Fix stranges characters in the terminal.
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
+Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
+Set-PSReadLineKeyHandler -Chord Ctrl+Shift+a -Function SelectAll
 
 # Sets the main prompt in the terminal
 function prompt{
     $Host.UI.RawUI.WindowTitle = (Get-Location).Path
     Set-PSReadLineOption -Colors @{ Command = 'green' }
     Invoke-Starship
-    # set icons in the terminal.
-    $currentDir = (get-location).Path
-    if($currentDir.Contains($HOME)){
-        $currentDir = $currentDir.Replace($HOME, "🏠")
-    }
-    elseif($currentDir.Contains("D:\")) {
-        $currentDir = $currentDir.Replace("D:\","📍\")
-    }
-    elseif($currentDir.Contains("C:\")) {
-        $currentDir = $currentDir.Replace("C:\","\🐧")
-    }
-    if((Get-Location).Path.Contains("temp")){ # If the current directory is temp and the home directory
-        if((Get-Location).Path.Contains($HOME)){
-            $currentDir = "🏠\ "
-        }
-        else{
-            $currentDir = "📍\ "
-        }
-    }
-    # If the current directory is a work directory (VT, VT.prj)
-    if((Get-Location).Path.ToLower().Contains("vt.prj.")){
-        $tmp=$false
-        $lct = $(Get-Location).Path
-        if($lct.Contains("temp")){
-            $tmp=$true
-        }
-        $suite_name=$(((Get-Location).Path).Split('\').where({$_ -like '*vt.prj*'}))
-        if ($suite_name) {
-            $name_part = $suite_name.ToLower().Split('vt.prj.')[1].Split('.')
-            $suite_name = $name_part[1] #-join "."
-        }
-        $suite_child = ""
-        if ((Get-Location).Path.Contains('vt.prj.ford.foh02.sys_test')) {
-            $suite_child=$((Get-Location).Path).Split('vt.prj.ford.foh02.sys_test')[1]
-        }
-        $ta="${BLUE}[TA||$suite_name]${MAGENTA}"
-        if ($tmp) {
-            $currentDir = "$ta $($suite_child)"
-        }
-        else{
-            $currentDir = "$ta$($suite_child)"
-        }
-    }
-    # Print the current directories in the terminal.
-    if ((Test-Path .git) -or (git rev-parse --abbrev-ref HEAD) ) {
-        # If the current directory has a git repository.
-        Write-Host ("" + $currentDir + "\\") -NoNewLine ` -ForegroundColor 13
-        Write-BranchName
-        Write-Host ("📝🔧") -NoNewLine ` -ForegroundColor 10
-        return " "
-    }else{
-        Write-Host ("" + $currentDir+"\\") -NoNewLine ` -ForegroundColor 13
-        Write-BranchName
-        Write-Host ("-->") -NoNewLine ` -ForegroundColor 10
-        return " "
-    }
+    ps1_newstyle
+    Write-Host ("➤") -NoNewLine ` -ForegroundColor 10
+    return " "
 }
 # This function writes the special characters of the current terminal used. 
 function Invoke-Starship{

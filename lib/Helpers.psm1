@@ -20,9 +20,66 @@ $BLUE = "`e[34m"
 $MAGENTA = "`e[38;5;13m"
 $CYAN = "`e[36m"
 $WHITE = "`e[37m"
+$BLACK = "`e[30m"
+$BOLD = "`e[1m"
 # Constants 
 $HELP = "${YELLOW}[?] Usage:`n    ${GREEN}PS> {0}${MAGENTA} {1}${RESET}"
 $POWERSHELL = "\PowerShell\"
+
+function ps1_location {
+	$currentLocation = Get-Location
+	$isRepo = (test-path -Path ".git") -or (git rev-parse --abbrev-ref HEAD)
+	if($currentLocation.Path -like $HOME) {
+		return "🏠"
+	}
+	if($currentLocation.Path -like "C:\LegacyApp*") {
+		$relativePath = $currentLocation.Path.Substring($currentLocation.Path.IndexOf("C:\LegacyApp") + "C:\LegacyApp".Length)
+		return "$($BOLD)🐧$relativePath$($RESET)"
+	}
+	if($currentLocation.Path -like "*GitHub*") {
+		$relativePath = $currentLocation.Path.Substring($currentLocation.Path.IndexOf("GitHub") + "GitHub".Length)
+		return "$($BOLD) $relativePath$($RESET)"
+	}
+	if($currentLocation.Path -like "*OneDrive*") {
+		$relativePath = $currentLocation.Path.Substring($currentLocation.Path.IndexOf("OneDrive") + "OneDrive".Length)
+		return "$($BOLD)☁ $relativePath$($RESET)"
+	}
+	if($currentLocation.Path -like "*Documents*") {
+		$relativePath = $currentLocation.Path.Substring($currentLocation.Path.IndexOf("Documents") + "Documents".Length)
+		return "$($BOLD)📄 $relativePath$($RESET)"
+	}
+	if($currentLocation.Path.ToLower() -like "*vt.prj.*" -or $currentLocation.Path.ToLower() -like "*gmg*") {
+		try{
+			$config = Get-Content -Path "$SUITE_PATH\lib\utils\configurations.json" -Raw | ConvertFrom-Json
+			$suiteName = $config.TA_SUITES.PSObject.Properties | Where-Object { $currentLocation.Path -like "*$($_.Value)*" } | Select-Object -ExpandProperty Value
+			$relativePath = $currentLocation.Path.Substring($currentLocation.Path.IndexOf($suiteName) + $suiteName.Length)
+			if(-not $suiteName) {
+				$suiteName = "Unknown-Suite"
+			}
+			if($suiteName.ToUpper() -eq "GMG") {
+				$firstFolderName = $relativePath.split("\")[0]
+				$suiteName = "GMG$firstFolderName"
+				$relativePath = $relativePath.Substring($firstFolderName.Length)	
+			}
+			return "$($BOLD)[$suiteName]$relativePath$($RESET)"
+		}catch{
+			return "⚠️$($BOLD)$(Get-Location)$($RESET)"
+		}	
+	}
+	return "$($BOLD)$(Get-Location)$($RESET)"
+}
+
+function ps1_newstyle {
+    $esc = [char]27
+    $reset = "$esc[0m"
+    $location = ps1_location
+    $branchName = Write-BranchName2
+    $seg1 = "$esc[48;2;116;199;236m$esc[38;2;30;30;46m  "
+    $seg2 = "$esc[48;2;180;190;254m$esc[38;2;17;17;27m  $location"
+    $seg3 = "$esc[38;2;180;190;254m$esc[48;2;166;227;161m$esc[38;2;30;30;46m$branchName $esc[0m$esc[38;2;166;227;161m$reset"
+
+    Write-Host "$seg1$seg2$seg3"
+}
 
 <#
 .SYNOPSIS
