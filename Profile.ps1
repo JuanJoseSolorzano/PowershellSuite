@@ -59,6 +59,7 @@ Set-PSReadLineKeyHandler -Chord Ctrl+Shift+a -Function SelectAll
 
 # Sets the main prompt in the terminal
 function prompt{
+    Write-Host "`e[5 q" -NoNewline
     $Host.UI.RawUI.WindowTitle = (Get-Location).Path
     Set-PSReadLineOption -Colors @{ Command = 'green' }
     Invoke-Starship
