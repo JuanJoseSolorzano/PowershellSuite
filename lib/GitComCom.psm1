@@ -480,24 +480,16 @@ function Ignore{
 function Git-Push{
 	[CmdletBinding()]
 	param (
-		[string]$folder,
-		[string]$commit
+		[Parameter(Mandatory=$false)][string]$path,
+		[Parameter(Mandatory=$true)][string]$m
 	)
-	Write-Host ">> git pull --all (done)"
-	git pull --all
-	if($folder){
-		Ignore $folder
-	}else{
-		git add "."
-		Write-Host ">> git add --all (done)"
+	if(!$path){
+		$path = "./"
 	}
-	if($commit){
-		git commit -m $commit
-		Write-Output ">> commit added: '$commit'"
-		Write-Host "-------------------------------------------------------------"
-		git push origin (mbr)
-	}
-	else {
-		Write-Output "push command needs to have a commit!!!"
-	}
+	$parentFolder="$(git status --porcelain)".Trim().Split(" ")[1].Split("/")[0]
+	$commitMessage = "Updated: <$parentFolder> - $m"
+	Write-Host ${BLUE}">> Committing changes of: ${GREEN}`"$path`"${BLUE} with message: ${GREEN}`"$commitMessage`"${RESET}"
+	Write-Host ${BLUE}">> Pushing into: ${GREEN}<$(mbr)>${RESET}"
+	Read-Host ${RED}"Press Enter to Push... or <Ctrl+C> to cancel...${RESET}"
+	git add $path && git commit -m "$commitMessage" && git push origin $(mbr)
 }
