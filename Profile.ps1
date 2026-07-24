@@ -56,7 +56,7 @@ Set-PSReadLineKeyHandler -Key Shift+Tab -Function MenuComplete
 Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
 Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
 Set-PSReadLineKeyHandler -Chord Ctrl+Shift+a -Function SelectAll
-
+Start-LiveClock
 # Sets the main prompt in the terminal
 function prompt{
     Write-Host "`e[5 q" -NoNewline

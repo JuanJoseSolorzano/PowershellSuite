@@ -76,9 +76,34 @@ function ps1_newstyle {
     $branchName = Write-BranchName2
     $seg1 = "$esc[48;2;116;199;236m$esc[38;2;30;30;46m  "
     $seg2 = "$esc[48;2;180;190;254m$esc[38;2;17;17;27m  $location"
-    $seg3 = "$esc[38;2;180;190;254m$esc[48;2;166;227;161m$esc[38;2;30;30;46m$branchName $esc[0m$esc[38;2;166;227;161m$reset"
+    $seg3 = "$esc[38;2;180;190;254m$esc[48;2;166;227;161m$esc[38;2;30;30;46m$branchName $esc[0m$esc[38;2;166;227;161m $reset"
 
     Write-Host "$seg1$seg2$seg3"
+}
+
+function Start-LiveClock {
+    # kill old timer if re-sourced
+    if ($global:LiveClockTimer) {
+        $global:LiveClockTimer.Stop()
+        $global:LiveClockTimer.Dispose()
+        Get-EventSubscriber | Where-Object { $_.SourceIdentifier -eq 'LiveClockTick' } |
+            ForEach-Object { Unregister-Event -SubscriptionId $_.SubscriptionId }
+    }
+    $global:LiveClockTimer = New-Object System.Timers.Timer
+    $global:LiveClockTimer.Interval = 1000
+    $global:LiveClockTimer.AutoReset = $true
+    Register-ObjectEvent -InputObject $global:LiveClockTimer -EventName Elapsed -SourceIdentifier 'LiveClockTick' -Action {
+        $esc  = [char]27
+        $time = Get-Date -Format "HH:mm"
+        $text = " 󰥔 $time "
+        $width = $Host.UI.RawUI.WindowSize.Width
+        $col   = $width - $text.Length
+        if ($col -lt 0) { $col = 0 }
+        # save cursor, go to row 1 col, paint, restore
+        $paint = "$esc[s$esc[1;${col}H$esc[38;2;205;214;244m$esc[48;2;49;50;68m$text$esc[0m$esc[u"
+        [Console]::Write($paint)
+    } | Out-Null
+    $global:LiveClockTimer.Start()
 }
 
 <#

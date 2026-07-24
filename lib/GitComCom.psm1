@@ -106,6 +106,18 @@ See the LICENSE file in the project root for more information.
 # Constants for GIT commands
 $USER_NAME = "EnDS-Test-Automation" # Replace with your GitHub username.
 $SUITE_PATH = "C:\LegacyApp\Powershell_Suite" # Path to the PowerShell Suite directory.
+# Define ANSI escape codes for colors
+$RESET = "`e[0m"
+$RED = "`e[31m"
+$GREEN = "`e[32m"
+$GRAY = "`e[37m"
+$YELLOW = "`e[33m"
+$BLUE = "`e[34m"
+$MAGENTA = "`e[38;5;13m"
+$CYAN = "`e[36m"
+$WHITE = "`e[37m"
+$BLACK = "`e[30m"
+$BOLD = "`e[1m"
 
 # Imports
 $exe_path = Get-Location
