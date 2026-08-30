@@ -1,0 +1,598 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": 
+    [
+        {
+            "command": 
+            {
+                "action": "resizePane",
+                "direction": "left"
+            },
+            "id": "User.resizePane.2A0DA8E0"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "down"
+            },
+            "id": "User.moveFocus.F747588A"
+        },
+        {
+            "command": "find",
+            "id": "User.find"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "splitMode": "duplicate"
+            },
+            "id": "User.splitPane.A6751878"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "\u0017"
+            },
+            "id": "User.sendInput.817164EE"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "down"
+            },
+            "id": "User.splitPane.D5151347"
+        },
+        {
+            "command": 
+            {
+                "action": "resizePane",
+                "direction": "up"
+            },
+            "id": "User.resizePane.6CD791B"
+        },
+        {
+            "command": "paste",
+            "id": "User.paste"
+        },
+        {
+            "command": "toggleSplitOrientation",
+            "id": "User.toggleSplitOrientation"
+        },
+        {
+            "command": 
+            {
+                "action": "resizePane",
+                "direction": "right"
+            },
+            "id": "User.resizePane.87C324ED"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "left"
+            },
+            "id": "User.moveFocus.2A0DA8E0"
+        },
+        {
+            "command": 
+            {
+                "action": "prevTab"
+            },
+            "id": "User.prevTab.0"
+        },
+        {
+            "command": 
+            {
+                "action": "resizePane",
+                "direction": "down"
+            },
+            "id": "User.resizePane.F747588A"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "previous"
+            },
+            "id": "User.moveFocus.75247157"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "right"
+            },
+            "id": "User.moveFocus.87C324ED"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "right"
+            },
+            "id": "User.splitPane.864CD510"
+        },
+        {
+            "command": 
+            {
+                "action": "nextTab"
+            },
+            "id": "User.nextTab.0"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "down",
+                "splitMode": "duplicate"
+            },
+            "id": "User.splitPane.10B260D2"
+        },
+        {
+            "command": 
+            {
+                "action": "moveFocus",
+                "direction": "up"
+            },
+            "id": "User.moveFocus.6CD791B"
+        },
+        {
+            "command": 
+            {
+                "action": "switchToTab",
+                "index": 4294967295
+            },
+            "id": "User.switchToTab.9CB19EED"
+        },
+        {
+            "command": 
+            {
+                "action": "newWindow",
+                "profile": "{0d6c0106-3a91-43b7-a1f3-d3aa72c49a75}"
+            },
+            "id": "User.newWindow.6F5AEB14"
+        },
+        {
+            "command": 
+            {
+                "action": "sendInput",
+                "input": "\u001b\r"
+            },
+            "id": "User.sendInput.8F63D3A9"
+        }
+    ],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{0d6c0106-3a91-43b7-a1f3-d3aa72c49a75}",
+    "firstWindowPreference": "persistedWindowLayout",
+    "keybindings": 
+    [
+        {
+            "id": null,
+            "keys": "alt+shift+right"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+c"
+        },
+        {
+            "id": "User.splitPane.A6751878",
+            "keys": "ctrl+shift+enter"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+j"
+        },
+        {
+            "id": "User.resizePane.2A0DA8E0",
+            "keys": "ctrl+shift+h"
+        },
+        {
+            "id": "User.find",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "User.paste",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "User.resizePane.6CD791B",
+            "keys": "ctrl+shift+k"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+tab"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+minus"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+g"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+d"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+left"
+        },
+        {
+            "id": "User.splitPane.10B260D2",
+            "keys": "ctrl+enter"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+h"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+up"
+        },
+        {
+            "id": "User.newWindow.6F5AEB14",
+            "keys": "ctrl+alt+n"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+tab"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+down"
+        },
+        {
+            "id": "User.moveFocus.6CD791B",
+            "keys": "ctrl+alt+k"
+        },
+        {
+            "id": "User.splitPane.864CD510",
+            "keys": "ctrl+alt+enter"
+        },
+        {
+            "id": "User.moveFocus.87C324ED",
+            "keys": "ctrl+alt+l"
+        },
+        {
+            "id": null,
+            "keys": "alt+down"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+left"
+        },
+        {
+            "id": null,
+            "keys": "alt+up"
+        },
+        {
+            "id": null,
+            "keys": "alt+right"
+        },
+        {
+            "id": null,
+            "keys": "alt+left"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+g"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+l"
+        },
+        {
+            "id": null,
+            "keys": "alt+shift+plus"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+space"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+z"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+9"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+alt+shift+9"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+k"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+shift+n"
+        },
+        {
+            "id": "User.resizePane.87C324ED",
+            "keys": "ctrl+shift+l"
+        },
+        {
+            "id": "User.resizePane.F747588A",
+            "keys": "ctrl+shift+j"
+        },
+        {
+            "id": "User.moveFocus.F747588A",
+            "keys": "ctrl+alt+j"
+        },
+        {
+            "id": "User.moveFocus.75247157",
+            "keys": "ctrl+alt+i"
+        },
+        {
+            "id": "User.nextTab.0",
+            "keys": "alt+k"
+        },
+        {
+            "id": "User.moveFocus.2A0DA8E0",
+            "keys": "ctrl+alt+h"
+        },
+        {
+            "id": "User.prevTab.0",
+            "keys": "alt+j"
+        },
+        {
+            "id": null,
+            "keys": "ctrl+insert"
+        },
+        {
+            "id": "User.switchToTab.9CB19EED",
+            "keys": "ctrl+9"
+        },
+        {
+            "id": null,
+            "keys": "enter"
+        },
+        {
+            "id": "User.toggleSplitOrientation",
+            "keys": "ctrl+alt+shift+j"
+        }
+    ],
+    "launchMode": "maximizedFocus",
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": 
+        {
+            "colorScheme": "My colors",
+            "font": 
+            {
+                "face": "Consolas"
+            },
+            "opacity": 85,
+            "scrollbarState": "hidden",
+            "startingDirectory": "d:/"
+        },
+        "list": 
+        [
+            {
+                "colorScheme": "My colors",
+                "font": 
+                {
+                    "face": "Consolas"
+                },
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell",
+                "opacity": 89
+            },
+            {
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "S\u00edmbolo del sistema"
+            },
+            {
+                "commandline": "C:\\Program Files\\Git\\bin\\bash.exe",
+                "guid": "{d4eca103-1007-4c5a-b59e-a8990676f4ef}",
+                "hidden": false,
+                "name": "bash",
+                "opacity": 85,
+                "scrollbarState": "hidden",
+                "startingDirectory": "%USERPROFILE%"
+            },
+            {
+                "colorScheme": "Catppuccin Mocha",
+                "commandline": "C:\\LegacyApp\\powershell\\pwsh.exe",
+                "cursorColor": "#98C379",
+                "font": 
+                {
+                    "face": "FiraCode Nerd Font",
+                    "size": 14
+                },
+                "guid": "{0d6c0106-3a91-43b7-a1f3-d3aa72c49a75}",
+                "hidden": false,
+                "name": "pwsh",
+                "opacity": 88,
+                "startingDirectory": "D:\\p_ta3"
+            },
+            {
+                "colorScheme": "Tango Dark (modified)",
+                "commandline": "C:\\LegacyApp\\Python27_x64\\python2.exe",
+                "font": 
+                {
+                    "face": "Lilex Nerd Font Propo"
+                },
+                "guid": "{cf367d22-86de-4a6d-b91b-118c831460f9}",
+                "hidden": false,
+                "name": "python2"
+            },
+            {
+                "colorScheme": "Solarized Dark (modified)",
+                "commandline": "C:\\LegacyApp\\Python36\\py36.exe",
+                "font": 
+                {
+                    "face": "Lilex Nerd Font Propo"
+                },
+                "guid": "{63d68e00-f6c5-45cc-a88b-584b7e54150f}",
+                "hidden": false,
+                "name": "python3"
+            }
+        ]
+    },
+    "schemes": 
+    [
+        {
+            "background": "#1E1E2E",
+            "black": "#45475A",
+            "blue": "#89B4FA",
+            "brightBlack": "#585B70",
+            "brightBlue": "#89B4FA",
+            "brightCyan": "#94E2D5",
+            "brightGreen": "#A6E3A1",
+            "brightPurple": "#F5C2E7",
+            "brightRed": "#F38BA8",
+            "brightWhite": "#A6ADC8",
+            "brightYellow": "#F9E2AF",
+            "cursorColor": "#F5E0DC",
+            "cyan": "#94E2D5",
+            "foreground": "#CDD6F4",
+            "green": "#A6E3A1",
+            "name": "Catppuccin Mocha",
+            "purple": "#F5C2E7",
+            "red": "#F38BA8",
+            "selectionBackground": "#585B70",
+            "white": "#BAC2DE",
+            "yellow": "#F9E2AF"
+        },
+        {
+            "background": "#000000",
+            "black": "#0C0C0C",
+            "blue": "#01BF74",
+            "brightBlack": "#767676",
+            "brightBlue": "#3B78FF",
+            "brightCyan": "#61D6D6",
+            "brightGreen": "#16C60C",
+            "brightPurple": "#B4009E",
+            "brightRed": "#E74856",
+            "brightWhite": "#75943F",
+            "brightYellow": "#F9F1A5",
+            "cursorColor": "#61D6D6",
+            "cyan": "#3A96DD",
+            "foreground": "#0264FF",
+            "green": "#13A10E",
+            "name": "My colors",
+            "purple": "#881798",
+            "red": "#C50F1F",
+            "selectionBackground": "#D6D6D6",
+            "white": "#0264FF",
+            "yellow": "#B2C10A"
+        },
+        {
+            "background": "#282C34",
+            "black": "#282C34",
+            "blue": "#61AFEF",
+            "brightBlack": "#5A6374",
+            "brightBlue": "#61AFEF",
+            "brightCyan": "#56B6C2",
+            "brightGreen": "#98C379",
+            "brightPurple": "#C678DD",
+            "brightRed": "#E06C75",
+            "brightWhite": "#DCDFE4",
+            "brightYellow": "#E5C07B",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#56B6C2",
+            "foreground": "#D0B0E4",
+            "green": "#98C379",
+            "name": "One Half Dark (modified)",
+            "purple": "#C678DD",
+            "red": "#E06C75",
+            "selectionBackground": "#FFFFFF",
+            "white": "#DCDFE4",
+            "yellow": "#E5C07B"
+        },
+        {
+            "background": "#002B36",
+            "black": "#002B36",
+            "blue": "#268BD2",
+            "brightBlack": "#073642",
+            "brightBlue": "#839496",
+            "brightCyan": "#93A1A1",
+            "brightGreen": "#586E75",
+            "brightPurple": "#6C71C4",
+            "brightRed": "#CB4B16",
+            "brightWhite": "#FDF6E3",
+            "brightYellow": "#657B83",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#2AA198",
+            "foreground": "#FAE610",
+            "green": "#859900",
+            "name": "Solarized Dark (modified)",
+            "purple": "#D33682",
+            "red": "#DC322F",
+            "selectionBackground": "#FFFFFF",
+            "white": "#EEE8D5",
+            "yellow": "#B58900"
+        },
+        {
+            "background": "#000000",
+            "black": "#000000",
+            "blue": "#3465A4",
+            "brightBlack": "#555753",
+            "brightBlue": "#729FCF",
+            "brightCyan": "#34E2E2",
+            "brightGreen": "#8AE234",
+            "brightPurple": "#AD7FA8",
+            "brightRed": "#EF2929",
+            "brightWhite": "#EEEEEC",
+            "brightYellow": "#FCE94F",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#06989A",
+            "foreground": "#BFAEF2",
+            "green": "#4E9A06",
+            "name": "Tango Dark (modified)",
+            "purple": "#75507B",
+            "red": "#CC0000",
+            "selectionBackground": "#FDFF00",
+            "white": "#D3D7CF",
+            "yellow": "#C4A000"
+        },
+        {
+            "background": "#000000",
+            "black": "#000000",
+            "blue": "#000080",
+            "brightBlack": "#59FA00",
+            "brightBlue": "#0000FF",
+            "brightCyan": "#00FFFF",
+            "brightGreen": "#00FF00",
+            "brightPurple": "#FF00FF",
+            "brightRed": "#FF0000",
+            "brightWhite": "#00B0FF",
+            "brightYellow": "#FFFF00",
+            "cursorColor": "#02FFB3",
+            "cyan": "#008080",
+            "foreground": "#A3ED00",
+            "green": "#008000",
+            "name": "Vintage (modified)",
+            "purple": "#800080",
+            "red": "#800000",
+            "selectionBackground": "#02FF07",
+            "white": "#00D974",
+            "yellow": "#808000"
+        }
+    ],
+    "themes": [],
+    "windowingBehavior": "useNew"
+}

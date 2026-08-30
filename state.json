@@ -1,0 +1,55 @@
+{
+	"dismissedBadges" : 
+	[
+		"page.extensions"
+	],
+	"generatedProfiles" : 
+	[
+		"{b453ae62-4e3d-5e58-b989-0a998ec441b8}"
+	],
+	"persistedWindowLayouts" : 
+	[
+		{
+			"initialPosition" : "1920,-8",
+			"initialSize" : 
+			{
+				"height" : 1081,
+				"width" : 1920
+			},
+			"launchMode" : "maximizedFocus",
+			"tabLayout" : 
+			[
+				{
+					"action" : "newTab",
+					"commandline" : "C:\\LegacyApp\\powershell\\pwsh.exe",
+					"profile" : "{0d6c0106-3a91-43b7-a1f3-d3aa72c49a75}",
+					"startingDirectory" : "D:\\GitHub\\personal\\PowershellSuite",
+					"suppressApplicationTitle" : false,
+					"tabTitle" : "pwsh"
+				}
+			]
+		},
+		{
+			"initialPosition" : "0,-8",
+			"initialSize" : 
+			{
+				"height" : 1081,
+				"width" : 1920
+			},
+			"launchMode" : "maximizedFocus",
+			"tabLayout" : 
+			[
+				{
+					"action" : "newTab",
+					"commandline" : "C:\\LegacyApp\\powershell\\pwsh.exe",
+					"profile" : "{0d6c0106-3a91-43b7-a1f3-d3aa72c49a75}",
+					"startingDirectory" : "D:\\p_ta3",
+					"suppressApplicationTitle" : false,
+					"tabTitle" : "pwsh"
+				}
+			]
+		}
+	],
+	"settingsHash" : "c535dfe972fee98c-01dd2bc22420eb84",
+	"sshFolderGenerated" : false
+}
