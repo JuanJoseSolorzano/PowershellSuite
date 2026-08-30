@@ -12,6 +12,7 @@
     Date: [2021-09-01]
     Version: 3.1
 #>
+# Global variables to access in the current session.
 $RESET = "`e[0m"
 $RED = "`e[31m"
 $GREEN = "`e[32m"
@@ -22,10 +23,11 @@ $CYAN = "`e[36m"
 $WHITE = "`e[37m"
 $SUITE_PATH = "C:\LegacyApp\Powershell_Suite" # Path to the PowerShell Suite directory.
 $POWERSHELL_PATH = "C:\LegacyApp\Powershell_Suite"
-$INTERNAL_MODULES = @("GitComCom.psm1","Helpers.psm1","vs-suite.psm1")
+$INTERNAL_MODULES = @("GitComCom.psm1","Helpers.psm1","vs-suite.psm1","calendar.psm1")
 $LEGACYAPP = "C:\LegacyApp" # Path to the LegacyApp directory.
-$TDR = "EnDS-Test-Automation"
-# Initialize the PowerShell profile.
+$GITHUB = "D:\GitHub"
+
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $exe_path = Get-Location # get the current directory.
 Clear-Host # clear the console.
 # Import the necessary modules.
@@ -49,6 +51,7 @@ if($hasContent){
         Import-Module -Name $module.FullName -DisableNameChecking
     }
 }
+
 Set-Location $exe_path # return to the current directory.
 # Shows the directories options.
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
@@ -56,7 +59,7 @@ Set-PSReadLineKeyHandler -Key Shift+Tab -Function MenuComplete
 Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
 Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
 Set-PSReadLineKeyHandler -Chord Ctrl+Shift+a -Function SelectAll
-Start-LiveClock
+#Start-LiveClock # Shows the clock in the right corner of the terminal. Pending some improvements.
 # Sets the main prompt in the terminal
 function prompt{
     Write-Host "`e[5 q" -NoNewline

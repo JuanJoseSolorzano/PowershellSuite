@@ -94,7 +94,7 @@ function Start-LiveClock {
     $global:LiveClockTimer.AutoReset = $true
     Register-ObjectEvent -InputObject $global:LiveClockTimer -EventName Elapsed -SourceIdentifier 'LiveClockTick' -Action {
         $esc  = [char]27
-        $time = Get-Date -Format "HH:mm"
+        $time = Get-Date -Format "HH:mm:ss"
         $text = " 󰥔 $time "
         $width = $Host.UI.RawUI.WindowSize.Width
         $col   = $width - $text.Length
@@ -859,6 +859,29 @@ function Insert-line($filePath,$stringToFind,$insertedString){
 	catch {
 		return
 	}
+}
+
+function Coder {
+	param($folder)
+	try {
+		$(Start-Process "C:\LegacyApp\Coder\Code - Insiders.exe" $folder &) > $null 2>&1
+	}
+	catch {
+		Write-Host "[!] Folder not found, opening Coder ..."
+		$(Start-Process "C:\LegacyApp\Coder\Code - Insiders.exe" &) > $null 2>&1
+	}
+}
+
+function Brave{
+	
+	param($page)
+	try {
+	    start-Process "C:\LegacyApp\brave\brave.exe" $page    
+	}
+	catch {
+		Write-Host "[!] Page not found, opening Brave browser ..."
+		start-Process "C:\LegacyApp\brave\brave.exe"
+	}	
 }
 
 function set-globals {
