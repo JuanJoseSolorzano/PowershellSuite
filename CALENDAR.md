@@ -1,17 +1,17 @@
 # 📅 Calendar Module
 
 A small **calendar CLI** for PowerShell — inspired by tools like `khal`. Display any
-month, create and list **events**, and manage a simple **to-do list**, all from the
-terminal. Data is persisted to a local JSON file so your events and to-dos survive
-between sessions.
+month (with **ISO week-of-year numbers**) or the full year, create and list **events**,
+and manage a simple **to-do list**, all from the terminal. Data is persisted to a local
+JSON file so your events and to-dos survive between sessions.
 
-Source: [`lib/calendar.psm1`](calendar.psm1)
+Source: [lib/calendar.psm1](lib/calendar.psm1)
 
 
 ## 🚀 Loading the module
 
 The module is imported automatically by the suite. It is listed in `$INTERNAL_MODULES`
-in [`Profile.ps1`](../Profile.ps1), so once your PowerShell profile is set up it loads on
+in [Profile.ps1](Profile.ps1), so once your PowerShell profile is set up it loads on
 every new session.
 
 To load it manually (e.g. after editing it):
@@ -66,19 +66,24 @@ Structure:
 ```
 
 **Changing where data is stored:** the path is defined by `Get-CalendarDataPath` in
-[`calendar.psm1`](calendar.psm1). Edit that function if you want to point the store at a
-synced folder (OneDrive, a Git repo, etc.).
+[lib/calendar.psm1](lib/calendar.psm1). Edit that function if you want to point the store
+at a synced folder (OneDrive, a Git repo, etc.).
 
 
 ## 🗓️ Month view
 
+The month view always shows a leading **`Wk`** column with the **ISO 8601 week number**
+of each week.
+
 ```powershell
-Cal                    # current month
-Cal August             # by month name
-Cal Aug                # by abbreviation
-Cal 8                  # by number
-Cal August 2026        # month + year
+Cal                      # current month
+Cal August               # by month name
+Cal Aug                  # by abbreviation
+Cal 8                    # by number
+Cal August 2026          # month + year
 Cal 8 2026 -MondayFirst  # start the week on Monday
+Cal -allyear             # the entire current year
+Cal -allyear 2027        # the entire year 2027
 ```
 
 | Parameter      | Description                                          | Default        |
@@ -86,15 +91,43 @@ Cal 8 2026 -MondayFirst  # start the week on Monday
 | `-Month`       | Month as **name**, **abbreviation** or **number**    | current month  |
 | `-Year`        | Year to display                                      | current year   |
 | `-MondayFirst` | Start the week on Monday instead of Sunday           | off (Sunday)   |
+| `-AllYear`     | Display every month of the year (same as `year`)     | off            |
+
+> Week numbers follow ISO 8601: a week belongs to the year that contains its Thursday,
+> so the number shown for each row is taken from that row's Thursday. With `-MondayFirst`
+> each displayed row is exactly one ISO week.
 
 ### 🎨 Day colors (legend)
 
-| Marker            | Meaning                                    |
-| ----------------- | ------------------------------------------ |
-| 🟩 green highlight | today                                      |
-| 🔵 cyan           | day has an **event**                        |
-| 🟡 yellow         | day has a **pending to-do** (by due date)   |
-| 🟣 magenta        | day has **both** an event and a to-do       |
+| Marker            | Meaning                                     |
+| ----------------- | ------------------------------------------- |
+| 🟩 green highlight | today                                       |
+| 🔵 cyan           | day has an **event**                         |
+| 🟡 yellow         | day has a **pending to-do** (by due date)    |
+| 🟣 magenta        | day has **both** an event and a to-do        |
+
+The `Wk` column is shown in gray and is not affected by these colors.
+
+
+## 🗓️ Year view
+
+Display **all twelve months** of a year in a grid, each with its `Wk` (ISO week) column.
+This is exactly what `Cal -allyear` renders.
+
+```powershell
+Show-CalendarYear                   # current year
+Show-CalendarYear 2027              # a specific year
+Show-CalendarYear 2027 -Columns 4   # 4 months per row
+Show-CalendarYear -MondayFirst
+```
+
+| Position / Parameter | Description                                 | Default      |
+| -------------------- | ------------------------------------------- | ------------ |
+| `Year` (1)           | Year to display                             | current year |
+| `-Columns`           | Number of month blocks per row              | `3`          |
+| `-MondayFirst`       | Start each week on Monday instead of Sunday | off (Sunday) |
+
+Days are highlighted with the same colors as the month view. Alias: `year`.
 
 
 ## 📌 Events
@@ -186,6 +219,7 @@ Short, CLI-style names are provided for everyday use:
 | Alias        | Command                 |
 | ------------ | ----------------------- |
 | `agenda`     | `Show-Agenda`           |
+| `year`       | `Show-CalendarYear`     |
 | `event-add`  | `Add-CalendarEvent`     |
 | `events`     | `Show-CalendarEvents`   |
 | `event-del`  | `Remove-CalendarEvent`  |
@@ -195,6 +229,7 @@ Short, CLI-style names are provided for everyday use:
 | `todo-del`   | `Remove-CalendarTodo`   |
 
 > `Cal` is already short and is used as-is (no `cal` alias, to avoid shadowing the function).
+> Use `Cal -allyear` for the full year.
 
 Example using aliases:
 
@@ -216,17 +251,18 @@ format `yyyy-MM-dd`, or any date your system culture can parse.
 
 ## 🧩 Command summary
 
-| Task            | Command                 | Alias       |
-| --------------- | ----------------------- | ----------- |
-| Show a month    | `Cal`                   | —           |
-| Overview        | `Show-Agenda`           | `agenda`    |
-| Add event       | `Add-CalendarEvent`     | `event-add` |
-| List events     | `Show-CalendarEvents`   | `events`    |
-| Delete event    | `Remove-CalendarEvent`  | `event-del` |
-| Add to-do       | `Add-CalendarTodo`      | `todo-add`  |
-| List to-dos     | `Show-CalendarTodos`    | `todos`     |
-| Complete to-do  | `Complete-CalendarTodo` | `todo-done` |
-| Delete to-do    | `Remove-CalendarTodo`   | `todo-del`  |
+| Task            | Command                              | Alias       |
+| --------------- | ------------------------------------ | ----------- |
+| Show a month    | `Cal`                                | —           |
+| Show a year     | `Cal -allyear` / `Show-CalendarYear` | `year`      |
+| Overview        | `Show-Agenda`                        | `agenda`    |
+| Add event       | `Add-CalendarEvent`                  | `event-add` |
+| List events     | `Show-CalendarEvents`                | `events`    |
+| Delete event    | `Remove-CalendarEvent`               | `event-del` |
+| Add to-do       | `Add-CalendarTodo`                   | `todo-add`  |
+| List to-dos     | `Show-CalendarTodos`                 | `todos`     |
+| Complete to-do  | `Complete-CalendarTodo`              | `todo-done` |
+| Delete to-do    | `Remove-CalendarTodo`                | `todo-del`  |
 
 
 ## 👤 Author

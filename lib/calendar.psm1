@@ -10,7 +10,6 @@
     Author    : Solorzano, Juan Jose
 #>
 
-# region ------------------------------------------------------------ internals
 
 # Path to the JSON file that stores events and to-dos.
 function Get-CalendarDataPath {
@@ -124,116 +123,13 @@ function ConvertFrom-StoredDate {
     param([Parameter(Mandatory)][string]$Date)
     return [datetime]::ParseExact($Date, 'yyyy-MM-dd', [System.Globalization.CultureInfo]::InvariantCulture)
 }
-# endregion
 
-# region ------------------------------------------------------------ month view
+function Get-IsoWeek {
+    param([Parameter(Mandatory)][datetime]$Date)
+    return [System.Globalization.ISOWeek]::GetWeekOfYear($Date)
+}
 
-<#
-.SYNOPSIS
-    Display a month calendar. The month may be a word or a number.
-.PARAMETER Month
-    Month to display, as a name (August), abbreviation (Aug) or number (8).
-    Defaults to the current month.
-.PARAMETER Year
-    Year to display. Defaults to the current year.
-.PARAMETER MondayFirst
-    Start the week on Monday instead of Sunday.
-.EXAMPLE
-    Cal August
-.EXAMPLE
-    Cal 8 2026 -MondayFirst
-#>
-function Cal {
-    param(
-        [Parameter(Position = 0)]
-        [string]$Month = (Get-Date).Month,
-        [Parameter(Position = 1)]
-        [int]$Year = (Get-Date).Year,
-        [switch]$MondayFirst
-    )
-
-    $monthNum = ConvertTo-MonthNumber $Month
-    $today = Get-Date
-    $firstDay = Get-Date -Year $Year -Month $monthNum -Day 1
-    $daysInMonth = [DateTime]::DaysInMonth($Year, $monthNum)
-
-    # Collect the days in this month that hold events or pending to-dos.
-    $data = Get-CalendarData
-    $eventDays = @{}
-    foreach ($e in @($data.events)) {
-        $ed = ConvertFrom-StoredDate $e.Date
-        if ($ed.Year -eq $Year -and $ed.Month -eq $monthNum) { $eventDays[$ed.Day] = $true }
-    }
-    $todoDays = @{}
-    foreach ($t in @($data.todos)) {
-        if ($t.Due -and -not $t.Done) {
-            $td = ConvertFrom-StoredDate $t.Due
-            if ($td.Year -eq $Year -and $td.Month -eq $monthNum) { $todoDays[$td.Day] = $true }
-        }
-    }
-
-    if ($MondayFirst) {
-        $headers = @("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su")
-        $startColumn = (([int]$firstDay.DayOfWeek + 6) % 7)
-    }
-    else {
-        $headers = @("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
-        $startColumn = [int]$firstDay.DayOfWeek
-    }
-
-    $title = $firstDay.ToString("MMMM yyyy")
-    $width = 21
-    $padding = [Math]::Max(0, [Math]::Floor(($width - $title.Length) / 2))
-
-    Write-Host ""
-    Write-Host (" " * $padding + $title) -ForegroundColor Cyan
-    Write-Host ($headers -join " ") -ForegroundColor DarkGray
-
-    $currentColumn = 0
-
-    for ($i = 0; $i -lt $startColumn; $i++) {
-        Write-Host "   " -NoNewline
-        $currentColumn++
-    }
-
-    for ($day = 1; $day -le $daysInMonth; $day++) {
-        $isToday =
-        $day -eq $today.Day -and
-        $monthNum -eq $today.Month -and
-        $Year -eq $today.Year
-
-        $hasEvent = $eventDays.ContainsKey($day)
-        $hasTodo = $todoDays.ContainsKey($day)
-        $text = "{0,2} " -f $day
-
-        if ($isToday) {
-            Write-Host $text -NoNewline -ForegroundColor Black -BackgroundColor Green
-        }
-        elseif ($hasEvent -and $hasTodo) {
-            Write-Host $text -NoNewline -ForegroundColor Magenta
-        }
-        elseif ($hasEvent) {
-            Write-Host $text -NoNewline -ForegroundColor Cyan
-        }
-        elseif ($hasTodo) {
-            Write-Host $text -NoNewline -ForegroundColor Yellow
-        }
-        else {
-            Write-Host $text -NoNewline
-        }
-
-        $currentColumn++
-
-        if ($currentColumn -eq 7) {
-            Write-Host ""
-            $currentColumn = 0
-        }
-    }
-
-    if ($currentColumn -ne 0) {
-        Write-Host ""
-    }
-
+function Write-CalendarLegend {
     Write-Host ""
     Write-Host "today " -NoNewline -ForegroundColor Black -BackgroundColor Green
     Write-Host " event " -NoNewline -ForegroundColor Cyan
@@ -241,9 +137,203 @@ function Cal {
     Write-Host " both" -ForegroundColor Magenta
     Write-Host ""
 }
-# endregion
 
-# region ------------------------------------------------------------ events
+function Get-CalendarMonthBlock {
+    param(
+        [int]$Month,
+        [int]$Year,
+        [switch]$MondayFirst,
+        $Data
+    )
+
+    if (-not $Data) { $Data = Get-CalendarData }
+    $today = Get-Date
+    $firstDay = Get-Date -Year $Year -Month $Month -Day 1
+    $daysInMonth = [DateTime]::DaysInMonth($Year, $Month)
+
+    $eventDays = @{}
+    foreach ($e in @($Data.events)) {
+        $ed = ConvertFrom-StoredDate $e.Date
+        if ($ed.Year -eq $Year -and $ed.Month -eq $Month) { $eventDays[$ed.Day] = $true }
+    }
+    $todoDays = @{}
+    foreach ($t in @($Data.todos)) {
+        if ($t.Due -and -not $t.Done) {
+            $td = ConvertFrom-StoredDate $t.Due
+            if ($td.Year -eq $Year -and $td.Month -eq $Month) { $todoDays[$td.Day] = $true }
+        }
+    }
+
+    if ($MondayFirst) {
+        $headers = @("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su")
+        $startColumn = (([int]$firstDay.DayOfWeek + 6) % 7)
+        $thursdayIndex = 3
+    }
+    else {
+        $headers = @("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
+        $startColumn = [int]$firstDay.DayOfWeek
+        $thursdayIndex = 4
+    }
+
+    $width = 24
+    $lines = [System.Collections.Generic.List[object]]::new()
+
+    $title = $firstDay.ToString("MMMM yyyy")
+    $pad = [Math]::Max(0, [Math]::Floor(($width - $title.Length) / 2))
+    $lines.Add(@([pscustomobject]@{ Text = (" " * $pad) + $title; Fore = 'Cyan'; Back = $null }))
+    $lines.Add(@([pscustomobject]@{ Text = "Wk " + ($headers -join " "); Fore = 'DarkGray'; Back = $null }))
+
+    # Walk real dates from the cell under the 1st so each row's ISO week number
+    # (taken from that row's Thursday) is always correct.
+    $gridStart = $firstDay.AddDays(-$startColumn)
+    $numRows = [Math]::Ceiling(($startColumn + $daysInMonth) / 7)
+    for ($r = 0; $r -lt $numRows; $r++) {
+        $row = [System.Collections.Generic.List[object]]::new()
+        $weekNo = Get-IsoWeek $gridStart.AddDays($r * 7 + $thursdayIndex)
+        $row.Add([pscustomobject]@{ Text = ("{0,2} " -f $weekNo); Fore = 'DarkGray'; Back = $null })
+
+        for ($c = 0; $c -lt 7; $c++) {
+            $cellDate = $gridStart.AddDays($r * 7 + $c)
+            if ($cellDate.Month -eq $Month -and $cellDate.Year -eq $Year) {
+                $day = $cellDate.Day
+                $isToday = $day -eq $today.Day -and $Month -eq $today.Month -and $Year -eq $today.Year
+                $fore = $null; $back = $null
+                if ($isToday) { $fore = 'Black'; $back = 'Green' }
+                elseif ($eventDays.ContainsKey($day) -and $todoDays.ContainsKey($day)) { $fore = 'Magenta' }
+                elseif ($eventDays.ContainsKey($day)) { $fore = 'Cyan' }
+                elseif ($todoDays.ContainsKey($day)) { $fore = 'Yellow' }
+                $row.Add([pscustomobject]@{ Text = ("{0,2} " -f $day); Fore = $fore; Back = $back })
+            }
+            else {
+                $row.Add([pscustomobject]@{ Text = "   "; Fore = $null; Back = $null })
+            }
+        }
+        $lines.Add($row.ToArray())
+    }
+
+    return , $lines.ToArray()
+}
+
+# Print month blocks arranged in a grid, `Columns` blocks per row, keeping colors.
+function Write-CalendarMonthGrid {
+    param(
+        [object[]]$Blocks,
+        [int]$Columns = 3,
+        [int]$Width = 24,
+        [int]$Gutter = 3
+    )
+
+    for ($start = 0; $start -lt $Blocks.Count; $start += $Columns) {
+        $group = @()
+        for ($c = 0; $c -lt $Columns -and ($start + $c) -lt $Blocks.Count; $c++) {
+            $group += , $Blocks[$start + $c]
+        }
+        $maxLines = ($group | ForEach-Object { $_.Count } | Measure-Object -Maximum).Maximum
+
+        Write-Host ""
+        for ($ln = 0; $ln -lt $maxLines; $ln++) {
+            for ($b = 0; $b -lt $group.Count; $b++) {
+                $block = $group[$b]
+                if ($ln -lt $block.Count) {
+                    $len = 0
+                    foreach ($seg in $block[$ln]) {
+                        $p = @{ NoNewline = $true }
+                        if ($seg.Fore) { $p.ForegroundColor = $seg.Fore }
+                        if ($seg.Back) { $p.BackgroundColor = $seg.Back }
+                        Write-Host $seg.Text @p
+                        $len += $seg.Text.Length
+                    }
+                    if ($len -lt $Width) { Write-Host (" " * ($Width - $len)) -NoNewline }
+                }
+                else {
+                    Write-Host (" " * $Width) -NoNewline
+                }
+                if ($b -lt $group.Count - 1) { Write-Host (" " * $Gutter) -NoNewline }
+            }
+            Write-Host ""
+        }
+    }
+}
+
+<#
+.SYNOPSIS
+    Display a month calendar with ISO week numbers, or the whole year with -AllYear.
+.PARAMETER Month
+    Month to display, as a name (August), abbreviation (Aug) or number (8).
+    Defaults to the current month.
+.PARAMETER Year
+    Year to display. Defaults to the current year.
+.PARAMETER MondayFirst
+    Start the week on Monday instead of Sunday.
+.PARAMETER AllYear
+    Display every month of the year instead of a single month.
+.EXAMPLE
+    Cal August
+.EXAMPLE
+    Cal 8 2026 -MondayFirst
+.EXAMPLE
+    Cal -allyear
+#>
+function Cal {
+    param(
+        [Parameter(Position = 0)]
+        [string]$Month = (Get-Date).Month,
+        [Parameter(Position = 1)]
+        [int]$Year = (Get-Date).Year,
+        [switch]$MondayFirst,
+        [switch]$AllYear
+    )
+
+    if ($AllYear) {
+        # Allow 'cal -allyear 2027' by reading a 4-digit year from the month slot.
+        $yr = if ("$Month" -match '^\d{4}$') { [int]$Month } else { $Year }
+        Show-CalendarYear -Year $yr -MondayFirst:$MondayFirst
+        return
+    }
+
+    $monthNum = ConvertTo-MonthNumber $Month
+    $block = Get-CalendarMonthBlock -Month $monthNum -Year $Year -MondayFirst:$MondayFirst
+    Write-CalendarMonthGrid -Blocks (, $block) -Columns 1
+    Write-CalendarLegend
+}
+
+<#
+.SYNOPSIS
+    Display every month of a year in a grid.
+.PARAMETER Year
+    Year to display. Defaults to the current year.
+.PARAMETER Columns
+    Number of month blocks per row. Defaults to 3.
+.PARAMETER MondayFirst
+    Start each week on Monday instead of Sunday.
+.EXAMPLE
+    Show-CalendarYear
+.EXAMPLE
+    Show-CalendarYear 2027 -Columns 4
+#>
+function Show-CalendarYear {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0)][int]$Year = (Get-Date).Year,
+        [int]$Columns = 3,
+        [switch]$MondayFirst
+    )
+
+    $data = Get-CalendarData
+    $totalWidth = $Columns * 24 + ($Columns - 1) * 3
+    $title = "$Year"
+    $pad = [Math]::Max(0, [Math]::Floor(($totalWidth - $title.Length) / 2))
+
+    Write-Host ""
+    Write-Host ((" " * $pad) + $title) -ForegroundColor Green
+
+    $blocks = @()
+    for ($m = 1; $m -le 12; $m++) {
+        $blocks += , (Get-CalendarMonthBlock -Month $m -Year $Year -MondayFirst:$MondayFirst -Data $data)
+    }
+    Write-CalendarMonthGrid -Blocks $blocks -Columns $Columns
+    Write-CalendarLegend
+}
 
 <#
 .SYNOPSIS
@@ -377,9 +467,6 @@ function Remove-CalendarEvent {
     Save-CalendarData $data
     Write-Host "[-] Removed event ($Id) $($match.Title)" -ForegroundColor Yellow
 }
-# endregion
-
-# region ------------------------------------------------------------ to-dos
 
 <#
 .SYNOPSIS
@@ -516,9 +603,6 @@ function Remove-CalendarTodo {
     Save-CalendarData $data
     Write-Host "[-] Removed to-do ($Id) $($match.Title)" -ForegroundColor Yellow
 }
-# endregion
-
-# region ------------------------------------------------------------ agenda
 
 <#
 .SYNOPSIS
@@ -540,17 +624,14 @@ function Show-Agenda {
     Write-Host "Pending to-dos" -ForegroundColor Green
     Show-CalendarTodos
 }
-# endregion
 
-# region ------------------------------------------------------------ aliases
-# Note: 'Cal' is already short and case-insensitive; no 'cal' alias is created
-# because an alias with the same name would shadow the function.
-Set-Alias -Name agenda -Value Show-Agenda
-Set-Alias -Name event-add -Value Add-CalendarEvent
-Set-Alias -Name events -Value Show-CalendarEvents
-Set-Alias -Name event-del -Value Remove-CalendarEvent
-Set-Alias -Name todo-add -Value Add-CalendarTodo
-Set-Alias -Name todos -Value Show-CalendarTodos
-Set-Alias -Name todo-done -Value Complete-CalendarTodo
-Set-Alias -Name todo-del -Value Remove-CalendarTodo
-# endregion
+Set-Alias -Name agenda     -Value Show-Agenda
+Set-Alias -Name year       -Value Show-CalendarYear
+Set-Alias -Name event-add  -Value Add-CalendarEvent
+Set-Alias -Name events     -Value Show-CalendarEvents
+Set-Alias -Name event-del  -Value Remove-CalendarEvent
+Set-Alias -Name todo-add   -Value Add-CalendarTodo
+Set-Alias -Name todo       -Value Add-CalendarTodo
+Set-Alias -Name todos      -Value Show-CalendarTodos
+Set-Alias -Name todo-done  -Value Complete-CalendarTodo
+Set-Alias -Name todo-del   -Value Remove-CalendarTodo

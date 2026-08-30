@@ -61,6 +61,7 @@ After completing the installation steps, your PowerShell environment will be enh
 - `Remote`  🌐
 - `vs-suite`  🧰
 - `Terminal-Icons`  🎨
+- `calendar.psm1`
 
 
 ## 👤 Author
